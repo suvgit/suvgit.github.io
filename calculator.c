@@ -27,7 +27,7 @@ int main()
 			break;
 		}	
 	} else	{
-		printf("Error! Invalid Params ");
+		printf("Error! Invalid Parameters ");
 	}    
     return 0;
 }
