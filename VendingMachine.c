@@ -1,13 +1,33 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 
 /* run this program using the console pauser or add your own getch,  or input loop */
 char productname[40];
+
+void doVend(int product, int cashIn);
+int getProductCost(int num);
+char * getProductName(int ); 
 int isProductAvailable(int num);
-double getProductCost(int num);
-char * getProductName(int num);
-int howManyLeft(int cents);
+
+int main(int argc, char *argv[])
+{
+	int cashIn;
+	int prodNo;
+	
+	printf("Enter your product number (1 to 9) inclusive : ");
+	scanf("%d", &prodNo);
+
+	printf("How much cash inserted (e.g. 410) : ");
+	scanf("%d", &cashIn);
+	
+	//prodNo = 3;
+	//cashIn = 990;
+	doVend(prodNo, cashIn);
+	
+	system("pause");
+	return (0);
+}
 
 /* 
  * The main function should:
@@ -16,74 +36,142 @@ int howManyLeft(int cents);
  * 	Obtain the cost and the name of the product
  * 	If available, give out the product and the change amount
  */
-int main() {
-
-	/* Your code goes here */
-	int argc = 0;
-	double argm = 0.00;
-	char *name;
-	
-	/* 0) ask for number 1 and 9 and how much cash you are putting in (e.g. 4.00) double */
-	printf("Please enter the product code: ");
-	scanf("%d", &argc);
-	
-	printf("Please enter the money: ");
-	scanf("%lf", &argm);
-	
-	// validate the inputs
- 	if (argc < 1 || argc > 9)
+ void doVend(int product, int cashIn)
+ {
+ 	int cost, change, tc, rem, nleft, nremaining;
+ 	
+ 	// validate the inputs
+ 	if (product < 1 || product > 9)
  	{
   		printf("Product must be between 1 and 9 inclusive\n");
  		return;		
  	}
- 	if (argm < 0 || argm > 10000)
+ 	if (cashIn < 0 || cashIn > 10000)
  	{
   		printf("Cast inserted must be between 0 and 10000 cents inclusive\n");
  		return;		
- 	} 		
-	
-	/* Check if product available */
-	if (isProductAvailable(argc))
-	{
-		/* Get the product cost */
-		double cost = getProductCost(argc);
-		
-		if (argm >= cost)
-		{
-			/* Get the name of the product */	
-				
-			name = getProductName(argc);
-		
-			printf("Product Name is %s", name,"\n");
-			
-			if (argm > cost){
-				//printf( "\n name is available with a change : ");
-				//calculateCost(argm, cost);
-			} else {
-				printf( "\n name is available ");
-			}			
-		} else {
-			printf(" Amount entered is less than the cost of the product!");
-		}		
-	} else {
-		printf("Product not available!");
-	}	
-	
-	/* Print out the name of the product, the number, the cost and thee change due */
+ 	} 	
+ 	
+ 	
+ 	printf("Product is %s\n", getProductName(product));
+ 	printf("Cash inserted : %d\n", cashIn);
+ 	
+ 	if (isProductAvailable(product) == 0)
+ 	{
+ 		printf("Product is not available, sorry!\n");
+ 		return;	
+ 	}
+ 	
+ 	cost = getProductCost(product);
+ 	printf("Product cost  : %d\n", cost);
+ 	
+ 	if (cashIn < cost)
+ 	{
+  		printf("Please insert more cash, there is not enough\n");
+ 		return;			
+ 	}
+ 	
+ 	change = cashIn - cost;
+ 	printf("Your change will be : %d\n", change);
+ 	
+ 	// return minimum coins
+ 	tc = change / 200;
+ 	rem = change % 200;	
+ 	if (tc != 0) 
+	 {
+ 		nleft = howManyLeft(200);
+ 		if (nleft > 0)	// we can give some back
+ 		{
+ 			nremaining = nleft;	// how many left after give out
+ 			while (tc > 0 && nremaining > 0)
+ 			{
+ 				printf("Returning 1 E2 coin\n");
+ 				tc--;
+ 				nremaining--;
+ 				change = (change - 200);  			
+			}		
+ 		}	
+ 	}
+ 	//printf("change remaining : %d\n", change);
+  
+ 	tc = change / 100;
+ 	rem = change % 100;	
+ 	if (tc != 0) 
+	 {
+ 		nleft = howManyLeft(100);
+ 		if (nleft > 0)	// we can give some back
+ 		{
+ 			nremaining = nleft;	// how many left after give out
+ 			while (tc > 0 && nremaining > 0)
+ 			{
+ 				printf("Returning 1 E1 coin\n");
+ 				tc--;
+ 				nremaining--;
+ 				change = (change - 100);  			
+			}		
+ 		}	
+ 	} 	
 
+ 	//printf("change remaining : %d\n", change);
+ 	tc = change / 50;
+ 	rem = change % 50;	
+ 	if (tc != 0) 
+	 {
+ 		nleft = howManyLeft(50);
+ 		if (nleft > 0)	// we can give some back
+ 		{
+ 			nremaining = nleft;	// how many left after give out
+ 			while (tc > 0 && nremaining > 0)
+ 			{
+ 				printf("Returning 1 50c coin\n");
+ 				tc--;
+ 				nremaining--;
+ 				change = (change - 50);  			
+			}		
+ 		}	
+ 	} 
+     
+ 	//printf("change remaining : %d\n", change);
+ 	tc = change / 20;
+ 	rem = change % 20;	
+ 	if (tc != 0) 
+	 {
+ 		nleft = howManyLeft(20);
+ 		if (nleft > 0)	// we can give some back
+ 		{
+ 			nremaining = nleft;	// how many left after give out
+ 			while (tc > 0 && nremaining > 0)
+ 			{
+ 				printf("Returning 1 20c coin\n");
+ 				tc--;
+ 				nremaining--;
+ 				change = (change - 20);  			
+			}		
+ 		}	
+ 	} 
 
-	/* finish */
-
-	printf("Press a key\n");
-	system("pause");
-	return 0;
-}
-
+ 	// printf("change remaining : %d\n", change);
+ 	tc = change / 10;
+ 	rem = change % 10;	
+ 	if (tc != 0) 
+	 {
+ 		nleft = howManyLeft(10);
+ 		if (nleft > 0)	// we can give some back
+ 		{
+ 			nremaining = nleft;	// how many left after give out
+ 			while (tc > 0 && nremaining > 0)
+ 			{
+ 				printf("Returning 1 10 coin\n");
+ 				tc--;
+ 				nremaining--;
+ 				change = (change - 10);  			
+			}		
+ 		}	
+ 	}            	
+ }
+ 
+ 
 /**************** HELPING FUNCTIONS ********************/
-// function to calculate the change
-double calculateCost(double amount,double cost){
-	
-}
 
 /*
  *	int isProductAvailable(int productNumber)
@@ -120,27 +208,27 @@ int isProductAvailable(int num) {
  *
  *  
  */
-double getProductCost(int num) {
-	double price = 0;
+int getProductCost(int num) {
+	int price = 0;
 	
 	switch (num)
 	{
 		case 1:
 		case 4:
 		case 7:
-			price = 2.70;
+			price = 270;
 			break;
 		
 		case 2:
 		case 5:
 		case 8:
-			price = 1.60;
+			price = 160;
 			break;
 		
 		case 3:
 		case 6:
 		case 9:
-			price = 3.10;
+			price = 310;
 			break;
 		
 		default:
@@ -175,7 +263,7 @@ char * getProductName(int num) {
 			strcpy(productname,"Cone d'amour'");
 			break;
 		case 5:
-			strcpy(productname,"Le cône");
+			strcpy(productname,"Le cÃ´ne");
 			break;
 		case 8:
 			strcpy(productname,"Wafer thin");
@@ -212,7 +300,7 @@ int howManyLeft(int cents) {
 	switch (cents)
 	{
 		case 200:
-			left = 10;		// 200 cents
+			left = 1;		// 200 cents
 			break;
 		
 		case 100:
@@ -238,4 +326,5 @@ int howManyLeft(int cents) {
 	
 	return(left);
 }
+
 
